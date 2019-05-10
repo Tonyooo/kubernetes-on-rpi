@@ -1,14 +1,13 @@
 #!/bin/bash
 
-# Ici on configure le chemin de la microSD
-# et le point de montage nécessaire à la bonne exécution du script
+# Script from https://jls42.org/raspberry-pi/initialisation-auto-de-raspbian-sur-raspberry-pi/
+
 msd_fs="/dev/sdb"
 mountpoint="/mnt/sdb"
 
 [ -d ${mountpoint} ] || mkdir ${mountpoint}
 [ -b ${msd_fs} ] || { echo  "${msd_fs} non disponible" ; exit 1 ;}
 
-#raspbian_version="2018-06-27-raspbian-stretch-lite.zip"
 raspbian_version=""
 if [ -z ${raspbian_version} ]
 then
