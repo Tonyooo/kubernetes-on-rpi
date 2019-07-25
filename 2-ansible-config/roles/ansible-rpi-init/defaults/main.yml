@@ -1,0 +1,7 @@
+---
+# defaults file for ansible-raspberrypi-init
+servername: "servername"
+#osef par defaut
+rpi_password: "$6$la2rR4adzHq98Xiu$q4jNFoSLWVG6CxZXyGxMt8R15FuIA2yuwWMhLWEk1xG40VDupxOXUWBR/Xlge2asYKSpzqRNCEKfRs58UgLle/"
+rpi_pubkey: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+rpi_upgrade: yes

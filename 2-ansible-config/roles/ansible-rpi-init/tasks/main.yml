@@ -1,0 +1,53 @@
+---
+# tasks file for ansible-raspberrypi-init
+
+- name: Mise à jour raspbian
+  apt:
+    upgrade: "{{ rpi_upgrade }}"
+    update_cache: yes
+    state: latest
+
+- name: Configuration du nom
+  hostname:
+    name: "{{ servername }}"
+
+- name: Ajoute le nom du serveur dans le fichier /etc/hosts
+  replace:
+    regexp: '(\s+localhost$)'
+    replace: '\1 {{ servername }}'
+    path: /etc/hosts
+
+## TODO : Rajouter une génération de clef ssh local si non présente
+
+# http://docs.ansible.com/ansible/latest/authorized_key_module.html
+- name: Ajoute la clef publique
+  authorized_key:
+    user: pi
+    state: present
+    key: "{{ rpi_pubkey }}"
+
+# mkpasswd --method=sha-512
+# http://docs.ansible.com/ansible/latest/user_module.html
+- name: Mise à jour du mot de passe de l'utilisateur pi
+  user:
+    name: "pi"
+    update_password: "always"
+    password: "{{ rpi_password }}"
+  register: cmdline
+
+- name: Redémarrage
+  shell: sleep 5 && reboot
+  async: 1200
+  poll: 0
+  ignore_errors: yes
+  when: cmdline.changed
+
+- name: Attente suite au redémarrage
+  wait_for:
+    host: "{{ ansible_ssh_host }}"
+    port: 22
+    state: started
+    delay: 60
+    timeout: 300
+  connection: local
+  when: cmdline.changed

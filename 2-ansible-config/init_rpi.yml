@@ -1,0 +1,11 @@
+---
+- name: "Init Rapsberry Pis"
+  hosts: 
+    - rpi1
+    - rpi2
+  remote_user: "pi"
+  roles:
+    - roles/ansible-rpi-init
+  vars:
+    rpi_password: "$6$lW7V6wxIoU8zRX8$bFWVhWdzYDgTYXqgnD9mhOjsjRSxdOhU.RSQY2aK2aTNXvrbI/sddLYOXza65gFM6.PLKpmsRgpm0N0bPtY3L1"
+    rpi_pubkey: "{{ lookup('file', lookup('env','HOME') + '/.ssh/raspberrypi.key.pub') }}"
